@@ -5,22 +5,23 @@ import React, {useState} from 'react'
 
 export function Home() {
 
-    const [participants, setParticipants] =  useState(['Bruno'])
+    const [participants, setParticipants] =  useState<string[]>([])
+    const [participantName, setParticipantName] = useState('')
 
     function handleParticipantAdd() {
-        if(participants.includes('Rodrigo')){
-            Alert.alert('Participante existe', 'Já existe um participante na lista com esse nome')
+        if(participants.includes(participantName)){
+          return  Alert.alert('Participante existe', 'Já existe um participante na lista com esse nome')
         }
-        else {
-            setParticipants(prevState => [...prevState, 'Rodrigo'])
-        }
+       
+            setParticipants(prevState => [...prevState, participantName])
+            setParticipantName('')   
     }
 
     function handleParticipantRemove(name: string) {
         Alert.alert('Remover', `Remover o participante ${name}?`, [
             {
                 text: 'Sim',
-                onPress: () => Alert.alert('Deletado!')
+                onPress: () => setParticipants(prevState => prevState.filter(item => item !== name))
             },
             {
                 text:'Não',
@@ -28,6 +29,7 @@ export function Home() {
             }
         ])
     }
+    
 
   return (
     <View style={styles.container}>
@@ -42,6 +44,8 @@ export function Home() {
                 style={styles.input}
                 placeholder='Nome do Participante'
                 placeholderTextColor='#6b6b6b'
+                onChangeText={text => setParticipantName(text)}
+                value={participantName}
             />
             <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
                 <Text style={styles.buttonText}>
@@ -49,7 +53,6 @@ export function Home() {
                 </Text>
             </TouchableOpacity>
         </View>
-
         <FlatList
             data={participants}
             keyExtractor={item => item}
